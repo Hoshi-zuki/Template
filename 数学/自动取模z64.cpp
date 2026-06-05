@@ -1,12 +1,10 @@
-// 模数类型，支持自动取模
-// 使用前需要定义 const i64 mod = 998244353;
+// 自动取模
 // mod 需为质数（逆元使用费马小定理）
-
 struct z64 {
     i64 x;// 存储的值
 
     z64(i64 x = 0) : x((x %mod + mod) % mod) {}// 构造，处理负数
-    operator i64() const { return x; }// 转 i64
+    explicit operator i64() const { return x; }// 转 i64（显式）
 
     z64 pow(i64 e) const {// 快速幂
         z64 res(1), base(*this);
@@ -42,12 +40,22 @@ struct z64 {
     z64 operator--(int) { z64 tmp(*this); --*this; return tmp; }// 后置--
 
     friend z64 operator+(z64 lhs, const z64 &rhs) { return lhs += rhs; }
+    friend z64 operator+(z64 lhs, i64 rhs) { return lhs += z64(rhs); }
+    friend z64 operator+(i64 lhs, z64 rhs) { return z64(lhs) += rhs; }
     friend z64 operator-(z64 lhs, const z64 &rhs) { return lhs -= rhs; }
+    friend z64 operator-(z64 lhs, i64 rhs) { return lhs -= z64(rhs); }
+    friend z64 operator-(i64 lhs, z64 rhs) { return z64(lhs) -= rhs; }
     friend z64 operator*(z64 lhs, const z64 &rhs) { return lhs *= rhs; }
+    friend z64 operator*(z64 lhs, i64 rhs) { return lhs *= z64(rhs); }
+    friend z64 operator*(i64 lhs, z64 rhs) { return z64(lhs) *= rhs; }
     friend z64 operator/(z64 lhs, const z64 &rhs) { return lhs /= rhs; }
+    friend z64 operator/(z64 lhs, i64 rhs) { return lhs /= z64(rhs); }
+    friend z64 operator/(i64 lhs, z64 rhs) { return z64(lhs) /= rhs; }
 
     friend bool operator==(const z64 &lhs, const z64 &rhs) { return lhs.x == rhs.x; }
     friend bool operator!=(const z64 &lhs, const z64 &rhs) { return lhs.x != rhs.x; }
+    friend bool operator<(const z64 &lhs, const z64 &rhs) { return lhs.x < rhs.x; }
+    friend bool operator>(const z64 &lhs, const z64 &rhs) { return lhs.x > rhs.x; }
 
     friend ostream &operator<<(ostream &os, const z64 &m) { return os << m.x; }
     friend istream &operator>>(istream &is, z64 &m) {
