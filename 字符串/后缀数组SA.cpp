@@ -74,3 +74,45 @@ struct SA {
         return sa[_i];
     }
 };
+
+//给定若干个字符串的height数组，如何求两两LCP之和？
+//对于这若干个字符串是一个字符串的所有后缀的情况：
+//先给后缀排序，然后任意两个的LCP=min(height[i+1,......., j])，
+//那么对于每个后缀而言，比其小的后缀（从自己开始向左走）提供的LCP一定不会增加，向右也是一个道理。
+//于是做法是单调栈扫height，正着一遍，倒着一遍去统计。
+//把sa.height放入该函数，返回值就是所有后缀两两LCP之和（每一有序对算了两次）
+i64 get(const vector<int> &vec) {
+    int n = vec.size();
+    i64 res = 0;
+    i64 now = 0;
+    vector<array<int, 2>>stk;
+    for (int i = 1;i < n;++i) {
+        int num = 1;
+        while (stk.size() && vec[i] <= vec[stk.back()[0]]) {
+            now -= (i64)vec[stk.back()[0]] * stk.back()[1];
+            num += stk.back()[1];
+            stk.pop_back();
+        }
+        now += (i64)vec[i] * num;
+        res += now;
+        stk.push_back({ i,num });
+    }
+    stk.resize(0);
+    now = 0;
+    for (int i = n - 1;i >= 1;--i) {
+        int num = 1;
+        while (stk.size() && vec[i] <= vec[stk.back()[0]]) {
+            now -= (i64)vec[stk.back()[0]] * stk.back()[1];
+            num += stk.back()[1];
+            stk.pop_back();
+        }
+        now += (i64)vec[i] * num;
+        res += now;
+        stk.push_back({ i,num });
+    }
+    return res;
+}
+
+//如果只是给定其中几个后缀，求两两LCP之和
+//那么像虚树那样，把这几个后缀的rk拿出来排序，再用st表求每一个和前一个的LCP，组成新height数组
+//然后再丢给上面的函数就行了！

@@ -11,7 +11,7 @@ struct KMP {
     void init(string _s) {//初始化
         s = _s;
         n = _s.length();
-        nxt = vector<int>(n, 0);
+        nxt = vector<int>(n + 1, 0);
         get_nxt();
     }
 
@@ -19,7 +19,7 @@ struct KMP {
         if (nxt[0] == -1)return nxt;
         nxt[0] = -1;
         nxt[1] = 0;
-        for (int i = 2;i < n;++i) {
+        for (int i = 2;i <= n;++i) {
             int len = nxt[i - 1];
             while (len >= 0 && s[i - 1] != s[len]) {
                 len = nxt[len];
@@ -38,13 +38,10 @@ struct KMP {
             }
             if (t[i] == s[ind])ind++;
             if (ind == n) {
-                ind--;
-                res.push_back(i - ind);
+                res.push_back(i - ind + 1);
                 ind = nxt[ind];
-                i--;
             }
         }
         return res;
     }
-
 };
