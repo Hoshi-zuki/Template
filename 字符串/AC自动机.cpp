@@ -49,15 +49,15 @@ struct ACAM {//AC自动机
         N = _N + 7;
         nxt = vector<array<int, B>>(N);
         G = vector<vector<int>>(N);
-        times = Alert = fail = vector<int>(N, 0);
+        end = times = Alert = fail = vector<int>(N, 0);
         cur = rt = 0;
     }
 
-    int trans(char x) {// 字符映射索引规则
+    int trans(const char &x) {// 字符映射索引规则
         return x - 'a';
     }
 
-    int insert(string str) {//插入字符串，插完别忘了build，返回该字符串末尾节点编号
+    int insert(const string &str) {//插入字符串，插完别忘了build，返回该字符串末尾节点编号
         int pos = rt;
         for (auto &x : str) {
             auto i = trans(x);
@@ -69,7 +69,7 @@ struct ACAM {//AC自动机
         return pos;
     }
 
-    int find(string str) {//找到字符串尾位置的内存编号
+    int find(const string &str) {//找到字符串尾位置的内存编号
         int pos = rt;
         for (auto &x : str) {
             if (!nxt[pos][trans(x)])return 0;
@@ -101,7 +101,7 @@ struct ACAM {//AC自动机
         }
     }
 
-    void read(string s) {
+    void read(const string &s) {
         int now = 0;
         for (auto &x : s) {
             now = nxt[now][trans(x)];
@@ -117,7 +117,7 @@ struct ACAM {//AC自动机
         }
     }
 
-    int query(string s) { //  read完查询某字符串出现次数
+    int query(const string &s) { //  read完查询某字符串出现次数
         return times[find(s)];
     }
 
